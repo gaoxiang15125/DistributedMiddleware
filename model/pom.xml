@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>middleware</artifactId>
+        <groupId>github.gx.middleware</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>model</artifactId>
+
+    <properties>
+        <mybatis-spring-boot.version>2.1.4</mybatis-spring-boot.version>
+        <mybatis-pagehelper.version>4.1.2</mybatis-pagehelper.version>
+    </properties>
+    <dependencies>
+        <!--api-->
+        <dependency>
+            <groupId>github.gx.middleware</groupId>
+            <artifactId>api</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <!--spring-mybatis-->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>${mybatis-spring-boot.version}</version>
+        </dependency>
+    </dependencies>
+</project>
