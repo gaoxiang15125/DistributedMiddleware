@@ -19,6 +19,7 @@
         <druid.version>1.2.5</druid.version>
         <lombok.version>1.18.18</lombok.version>
         <mybatis-plus.version>3.4.2</mybatis-plus.version>
+        <fastJson.version>1.2.75</fastJson.version>
     </properties>
 
     <dependencies>
@@ -48,6 +49,20 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
+        <!--redis 相关依赖-->
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <version>${spring-boot.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastJson.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>mysql</groupId>
