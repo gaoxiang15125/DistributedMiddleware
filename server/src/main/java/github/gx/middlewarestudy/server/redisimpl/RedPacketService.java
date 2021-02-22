@@ -137,4 +137,9 @@ public class RedPacketService implements IRedPacketService {
         }
         return false;
     }
+
+    public void testExpiredKey() {
+        redisTemplate.opsForValue().set("吼吼","houhou");
+        redisTemplate.expire("吼吼",2l, TimeUnit.SECONDS);
+    }
 }

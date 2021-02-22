@@ -1,10 +1,15 @@
 package github.gx.middlewarestudy;
 
+import github.gx.middlewarestudy.server.redisimpl.RedPacketService;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.data.redis.core.RedisTemplate;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @program: MiddlewareStudy
@@ -19,6 +24,8 @@ public class MainApplication {
     static Logger logger = LoggerFactory.getLogger(MainApplication.class);
     public static void main(String[] args) {
         logger.info(" Spring boot 启动了，看到了嘛");
-        SpringApplication.run(MainApplication.class, args);
+        ApplicationContext context = SpringApplication.run(MainApplication.class, args);
+        RedPacketService redPacketService = context.getBean(RedPacketService.class);
+        redPacketService.testExpiredKey();
     }
 }
