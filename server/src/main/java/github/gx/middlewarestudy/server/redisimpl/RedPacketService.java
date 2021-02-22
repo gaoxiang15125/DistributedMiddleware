@@ -8,10 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @program: MiddlewareStudy
@@ -70,8 +72,69 @@ public class RedPacketService implements IRedPacketService {
         return redId;
     }
 
+    // 由于 redis 是单线程，所以红包个数是一定的，问题在于防止用户抢了多次红包
     @Override
     public BigDecimal rob(Integer userId, String redId) throws Exception {
+        //做两件事情、检查 Redis 判断是否由可用的红包，将红包记录写入数据库
+        String robId = redId + ":rob";
+        ValueOperations valueOperations = redisTemplate.opsForValue();
+        Object obj = valueOperations.get(redId + userId + ":rob");
+        if(obj != null) {
+            // 已经抢过红包，返回红包金额
+            return new BigDecimal(obj.toString());
+        }
+        // 点红包业务
+        Boolean res = click(redId);
+        // 事实上就算红包总数出现问题也不影响，因为队列里红包的数量是固定的
+        String lockId = userId + redId + ":lock";
+        // 原子的写入锁，保证一个用户仅有一次抢红包操作
+        boolean lock = valueOperations.setIfAbsent(lockId, redId);
+        // 设置过期时间
+        redisTemplate.expire(lockId, 2L, TimeUnit.HOURS);
+
+        try {
+            //表示当前线程获取到了该分布式锁
+            if (lock) {
+                //开始执行后续的业务逻辑-注释同前面rob()的注释
+                Object value=redisTemplate.opsForList().rightPop(redId);
+                if (value!=null){
+                    //红包个数减1
+                    String redTotalKey = redId+":total";
+                    Integer currTotal=valueOperations.get(redTotalKey)!=null?
+                            (Integer) valueOperations.get(redTotalKey) : 0;
+                    valueOperations.set(redTotalKey,currTotal-1);
+                    //将红包金额返回给用户的同时，将抢红包记录存入数据库与缓存中
+                    BigDecimal result = new BigDecimal(value.toString()).
+                            divide(new BigDecimal(100));
+                    redService.recordRobRedPacket(userId,redId,new BigDecimal
+                            (value.toString()));
+                    //将当前用户抢到的红包记录存入缓存中，表示当前用户已经抢过该红包了
+                    valueOperations.set(redId+userId+":rob",result,24L,
+                            TimeUnit.HOURS);
+                    //打印抢到的红包金额信息
+                    log.info("当前用户抢到红包了：userId={} key={} 金额={} ",
+                            userId,redId,result);
+                    return result;
+                }}
+        }catch (Exception e){
+            throw new Exception("系统异常-抢红包-加分布式锁失败!");
+        }
         return null;
+    }
+
+    /**
+     * 点红包业务 通过锁获取红包
+     * @param redId
+     * @return
+     * @throws Exception
+     */
+    private Boolean click(String redId) throws Exception {
+        ValueOperations valueOperations =redisTemplate.opsForValue();
+        String redTotalKey = redId + ":total";
+        Object total = valueOperations.get(redTotalKey);
+        if(total!=null && Integer.valueOf(total.toString())>0) {
+            return true;
+        }
+        return false;
     }
 }

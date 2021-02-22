@@ -23,7 +23,7 @@ public class RedDetail {
     /**
      * 红包记录 ID
      */
-    int recordId;
+    String recordId;
     // TODO 没看出来这个红包怎么跟别的红包关联在一起的
     /**
      * 每个红包随机金额

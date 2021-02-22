@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import github.gx.middlewarestudy.dto.RedPacketDto;
 import github.gx.middlewarestudy.model.RedDetail;
 import github.gx.middlewarestudy.model.RedRecord;
+import github.gx.middlewarestudy.model.RedRobRecord;
 import github.gx.middlewarestudy.server.IRedService;
 import github.gx.middlewarestudy.server.mapper.RedDetailMapper;
 import github.gx.middlewarestudy.server.mapper.RedRecordMapper;
@@ -64,12 +65,12 @@ public class RedService implements IRedService {
         redRecord.setCreateTime(new Date());
         redRecordMapper.insert(redRecord);
         // 通过 Mapper 将对象写入数据库
-        redRecord = getRedRecordByRedPacket(redRecord.getRedPacket());
+//        redRecord = getRedRecordByRedPacket(redRecord.getRedPacket());
         // 定义红包分配结果对象，存入数据库
         RedDetail detail;
         for(Integer i:list) {
             detail = new RedDetail();
-            detail.setRecordId(redRecord.getId());
+            detail.setRecordId(redRecord.getRedPacket());
             detail.setAmount(BigDecimal.valueOf(i));
             detail.setCreateTime(new Date());
             // 将对象信息插入数据库
@@ -80,7 +81,14 @@ public class RedService implements IRedService {
     @Override
     @Async
     public void recordRobRedPacket(Integer userId, String redId, BigDecimal amount) throws Exception {
+        // 记录抢红包的金额、红包唯一标识符、象应字段
+        RedRobRecord redRobRecord = new RedRobRecord();
+        redRobRecord.setUserId(userId);
+        redRobRecord.setRedPacket(redId);
+        redRobRecord.setAmount(amount);
+        redRobRecord.setRobTime(new Date());
 
+        redRobRecordMapper.insert(redRobRecord);
     }
 
     /**

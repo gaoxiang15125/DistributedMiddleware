@@ -9,10 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 
 /**
  * @program: MiddlewareStudy
@@ -49,6 +48,26 @@ public class RedPacketController {
         } catch (Exception e) {
             // 打印异常日志，并返回相应错误信息
             log.error("构造红包过程出现错误: dto={}", dto, e);
+        }
+        return response;
+    }
+
+    @RequestMapping(value = "/rob", method = RequestMethod.GET)
+    public BaseResponse rob(@RequestParam Integer userId, @RequestParam String redId) {
+        // 就算 total 修改过程中出现多线程引起的错误，因为对金钱进行 null 判断，并不会引起异步错误
+        BaseResponse response = new BaseResponse(StatusEnum.Success);
+        try {
+            BigDecimal result = redPacketService.rob(userId, redId);
+            if(result != null) {
+                response.setData(result);
+            } else {
+                response.setStatusCode(StatusEnum.Fail.getCode());
+                response.setMessage("红包已经被抢光了");
+            }
+        } catch (Exception e) {
+            log.error("抢红包过程中发生错误: userId={} redId={}", userId, redId);
+            response.setStatusCode(StatusEnum.Fail.getCode());
+            response.setMessage(e.getMessage());
         }
         return response;
     }

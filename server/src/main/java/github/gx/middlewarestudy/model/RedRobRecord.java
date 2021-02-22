@@ -1,6 +1,7 @@
 package github.gx.middlewarestudy.model;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -12,6 +13,7 @@ import java.util.Date;
  * @email: 630268696@qq.com
  * @create: 2021-02-19 21:05
  **/
+@Data
 public class RedRobRecord {
 
     @TableId
