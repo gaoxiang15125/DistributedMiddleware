@@ -1,6 +1,7 @@
 package github.gx.middlewarestudy;
 
 import github.gx.middlewarestudy.model.UserEntity;
+import github.gx.middlewarestudy.rabbitmqstudy.entity.Person;
 import github.gx.middlewarestudy.server.mapper.UserMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -31,5 +33,13 @@ public class MainApplicationTest {
         System.out.println("这个错误是因为什么？？");
         List<UserEntity> userList = userMapper.selectList(null);
         System.out.println(userList.get(0));
+    }
+
+
+
+    @Test
+    public void testListUsage() {
+        List<Integer> infoList = new ArrayList<>();
+        infoList.remove(infoList.size() - 1);
     }
 }

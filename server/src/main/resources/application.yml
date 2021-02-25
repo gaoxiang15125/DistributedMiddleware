@@ -19,3 +19,52 @@ spring:
   redis:
     host: localhost
     port: 6379
+
+#  rabbitMQ 相关配置信息
+  rabbitmq:
+    virtual-host: / # 这里是做什么的 ？ 我也不是很清楚
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+#   rabbitMQ 实例配置信息
+mq:
+  env: local # 看起来像是类似 命名空间之类的东西
+  basic:
+    info:
+      queue:
+        name: ${mq.env}.queue
+      exchange:
+        name: ${mq.env}.exchange
+      routing:
+        name: ${mq.env}.key
+  # 感觉这是一个问题 所有的队列处理信息都在 configure 里 而不是单独创建的类
+  #  会不会是一个config 中只能配置一组绑定信息
+  fanout:
+    queue:
+      one:
+        name: ${mq.env}.middleware.mq.fanout.one.queue
+      two:
+        name: ${mq.env}.middleware.mq.fanout.two.queue
+    exchange:
+      name: ${mq.env}.middleware.mq.fanout.exchange
+  # 消息自动回复类型
+  auto:
+    knowledge:
+      queue:
+        name: ${mq.env}.middleware.knowledge.queue.name
+      exchange:
+        name: ${mq.env}.middleware.knowledge.echange.name
+      routing:
+        name: ${mq.env}.middleware.knowledge.routing.name
+
+ouhou:
+  object:
+    info:
+      queue:
+        name: ${mq.env}.object.queue.info
+      exchange:
+        name: ${mq.env}.object.exchange
+      routing:
+        name: ${mq.env}.object.routing
