@@ -1,8 +1,8 @@
-package github.gx.middlewarestudy.server.mapper;
+package github.gx.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import github.gx.middlewarestudy.model.RedDetail;
-import github.gx.middlewarestudy.model.RedRobRecord;
+import github.gx.model.RedDetail;
+import github.gx.model.RedRecord;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
  * @create: 2021-02-19 21:07
  **/
 @Repository
-public interface RedRobRecordMapper extends BaseMapper<RedRobRecord> {
+public interface RedRecordMapper extends BaseMapper<RedRecord> {
 }

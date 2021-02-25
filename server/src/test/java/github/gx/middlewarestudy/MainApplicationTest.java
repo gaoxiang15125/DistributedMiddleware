@@ -1,8 +1,7 @@
 package github.gx.middlewarestudy;
 
-import github.gx.middlewarestudy.model.UserEntity;
-import github.gx.middlewarestudy.rabbitmqstudy.entity.Person;
-import github.gx.middlewarestudy.server.mapper.UserMapper;
+import github.gx.mapper.UserMapper;
+import github.gx.model.UserEntity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +10,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * @program: MiddlewareStudy

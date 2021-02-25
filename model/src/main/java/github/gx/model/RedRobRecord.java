@@ -1,4 +1,4 @@
-package github.gx.middlewarestudy.model;
+package github.gx.model;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;

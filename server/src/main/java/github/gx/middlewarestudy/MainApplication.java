@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * @create: 2021-02-19 10:22
  **/
 @SpringBootApplication
-@MapperScan("github.gx.middlewarestudy.server.mapper")
+@MapperScan("github.gx.mapper")
 public class MainApplication {
     static Logger logger = LoggerFactory.getLogger(MainApplication.class);
     public static void main(String[] args) {

@@ -1,7 +1,7 @@
-package github.gx.middlewarestudy.server.mapper;
+package github.gx.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import github.gx.middlewarestudy.model.RedDetail;
+import github.gx.model.RedDetail;
 import org.springframework.stereotype.Repository;
 
 /**

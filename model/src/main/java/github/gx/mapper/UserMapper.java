@@ -1,9 +1,7 @@
-package github.gx.middlewarestudy.server.mapper;
+package github.gx.mapper;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import github.gx.middlewarestudy.model.UserEntity;
-import org.apache.ibatis.annotations.Mapper;
+import github.gx.model.UserEntity;
 import org.springframework.stereotype.Repository;
 
 /**
