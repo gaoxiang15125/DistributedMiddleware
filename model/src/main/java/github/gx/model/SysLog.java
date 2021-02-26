@@ -1,5 +1,8 @@
 package github.gx.model;
 
+import lombok.Data;
+import lombok.ToString;
+
 import java.util.Date;
 
 /**
@@ -9,6 +12,8 @@ import java.util.Date;
  * @email: 630268696@qq.com
  * @create: 2021-02-25 15:11
  **/
+@Data
+@ToString
 public class SysLog {
     Integer id;
     Integer userId;

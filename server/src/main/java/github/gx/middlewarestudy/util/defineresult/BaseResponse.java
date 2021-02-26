@@ -42,4 +42,10 @@ public class BaseResponse<T> {
         this.message = statusEnum.getMessage();
         returnTime = new Date();
     }
+
+    public BaseResponse(StatusEnum statusEnum, String message) {
+        this.statusCode = statusEnum.getCode();
+        this.message = message;
+        returnTime = new Date();
+    }
 }

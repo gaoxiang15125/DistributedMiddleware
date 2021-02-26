@@ -231,5 +231,22 @@ public class RabbitmqConfig {
         return BindingBuilder.bind(autoQueue()).to(autoExchange()).with(environment.getProperty("mq.auto.knowledge.routing.name"));
     }
 
+    /**
+     * 用户登录相关 组件信息
+     */
+    @Bean(name = "loginQueue")
+    public Queue loginQueue() {
+        return new Queue(environment.getProperty("mq.login.queue.name"), true);
+    }
 
+    @Bean
+    public TopicExchange loginExchange() {
+        return new TopicExchange(environment.getProperty("mq.login.exchange.name"));
+    }
+
+    @Bean
+    public Binding loginBinding() {
+        // 确定登录绑定关系
+        return BindingBuilder.bind(loginQueue()).to(loginExchange()).with(environment.getProperty("mq.login.routing.name"));
+    }
 }
