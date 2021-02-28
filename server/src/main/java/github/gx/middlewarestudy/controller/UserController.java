@@ -30,8 +30,12 @@ public class UserController {
     //前端请求前缀
     private static final String prefix="user";
     //注入用户操作Service层实例
-    @Autowired
     private UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     /**
      * 用户登录

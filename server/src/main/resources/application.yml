@@ -58,6 +58,24 @@ mq:
         name: ${mq.env}.middleware.knowledge.echange.name
       routing:
         name: ${mq.env}.middleware.knowledge.routing.name
+  # 订单超时模块 死信队列配置
+  order:
+    dead:
+      queue:
+        name: ${mq.env}.dead.queue.name
+      exchange:
+        name: ${mq.env}.dead.exchange.name
+      routing:
+        name: ${mq.env}.dead.routing.name
+    producer:
+      order:
+        exchange:
+          name: ${mq.env}.produce.exchange.name
+        routing:
+          name: ${mq.env}.produce.routing.name
+        real:
+          queue:
+            name: ${mq.env}.produce.queue.name
 
 ouhou:
   object:
