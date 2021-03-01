@@ -7,6 +7,8 @@ import github.gx.mapper.lock.UserAccountRecordMapper;
 import github.gx.middlewarestudy.controller.lock.dto.UserAccountDto;
 import github.gx.model.lock.UserAccount;
 import github.gx.model.lock.UserAccountRecord;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import org.slf4j.Logger;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @program: MiddlewareStudy
@@ -29,6 +32,8 @@ public class DataBaseLockService {
 
     private UserAccountMapper userAccountMapper;
     private UserAccountRecordMapper userAccountRecordMapper;
+    // zookeeper 客户端 CuratorFramework 实例
+    private CuratorFramework client;
 
     @Autowired
     public DataBaseLockService(UserAccountMapper userAccountMapper, UserAccountRecordMapper userAccountRecordMapper) {
@@ -38,6 +43,9 @@ public class DataBaseLockService {
 
     /**
      * 用户账户提取金额相关处理操作
+     * @description: 原有实现过程存在的问题：用户可能只想进行一次 取款操作，但是短时间内重复点击
+     * 按照乐观锁的逻辑，可能存在多次扣款的可能性，
+     * 为了进一步保证交易的安全性，添加 zookeeper 分布式锁，避免方法重复操作
      */
     public void takeMoney(UserAccountDto dto) throws Exception {
         //查询用户账户实体记录
@@ -67,6 +75,30 @@ public class DataBaseLockService {
             throw new Exception("账户不存在或账户余额不足!");
         }
     }
+
+    /**
+     * zookeeper 分布式锁实现逻辑，某种程度上与 redis 锁并没有什么区别
+     * @param dto
+     * @return
+     */
+    public void userRegWithZKLock(UserAccount dto) throws Exception{
+        //创建ZooKeeper互斥锁组件实例，需要将监控用的客户端实例、精心构造的共享资源作为构造参数
+        InterProcessMutex mutex=new InterProcessMutex(client,dto.getUserId()+"-lock");
+        try {
+            //采用互斥锁组件尝试获取分布式锁，其中尝试的最大时间在这里设置为10秒
+            //当然，具体情况需要根据实际的业务而定
+            if (mutex.acquire(10L, TimeUnit.SECONDS)) {
+                //TODO：真正的核心处理逻辑
+            }
+        }catch (Exception e){
+            throw e;
+        }finally {
+            //TODO：不管发生何种情况，在处理完核心业务逻辑之后，需要释放该分布式锁
+            mutex.release();
+        }
+        // 实际上跟 redis 原子操作锁一样
+    }
+
     // 无论是 乐观锁 还是 悲观锁 都是再数据库层面执行的操作本质上都是对 sql 的利用
     private UserAccount queryUserAccountByUserId(Integer userId) {
         QueryWrapper<UserAccount> accountQueryWrapper = new QueryWrapper<>();

@@ -86,3 +86,9 @@ ouhou:
         name: ${mq.env}.object.exchange
       routing:
         name: ${mq.env}.object.routing
+
+# zookeeper 相关配置信息
+# 按照书上的配置明显不是 spring 集成配置，而是直接连接的 zookeeper 服务器
+zk:
+  host: 127.0.0.1:2181
+  namespace: middleware_distributeLock
