@@ -1,5 +1,7 @@
 package github.gx.middlewarestudy.config;
 
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import github.gx.middlewarestudy.util.defineresult.SystemDefine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +57,7 @@ public class RabbitmqOrderConfig {
         args.put(SystemDefine.DEAD_EXCHANGE, environment.getProperty("mq.order.dead.exchange.name"));
         args.put(SystemDefine.DEAD_ROUTING, environment.getProperty("mq.order.dead.routing.name"));
         // 设定延迟时间 单位为: ms
-        args.put(SystemDefine.DEAD_TIMEOUT, 1000);
+        args.put(SystemDefine.DEAD_TIMEOUT, 10000);
         return new Queue(environment.getProperty("mq.order.dead.queue.name"), true, false, false, args);
     }
 
@@ -90,11 +92,21 @@ public class RabbitmqOrderConfig {
     /**
      * 创建死信队列与普通队列之间的绑定关系
      */
-
+    @Bean
     public Binding basicOrderDeadBinding() {
         return BindingBuilder.bind(realOrderConsumerQueue()).to(basicOrderDeadExchange()).with(environment.getProperty("mq.order.dead.routing.name"));
     }
 
-
+    /**
+     * 为 mybatis-plus 添加乐观锁拦截器 否则无法完成乐观锁操作 且会报错
+     * 这一点官方文档做的相当不够
+     * @return
+     */
+    @Bean
+    public MybatisPlusInterceptor optimisticLockerInnerInterceptor() {
+        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
+        return interceptor;
+    }
 }
 
